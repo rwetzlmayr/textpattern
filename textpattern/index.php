@@ -85,13 +85,15 @@ include txpath.'/lib/txplib_misc.php';
 
 trace_log(TEXTPATTERN_TRACE_START);
 
-include txpath.'/vendors/Textpattern/Loader.php';
+//include txpath.'/vendors/Textpattern/Loader.php';
+//$loader = new \Textpattern\Loader(txpath.'/vendors');
+//$loader->register();
+//
+//$loader = new \Textpattern\Loader(txpath.'/lib');
+//$loader->register();
 
-$loader = new \Textpattern\Loader(txpath.'/vendors');
-$loader->register();
+include txpath.'/../vendor/autoload.php';
 
-$loader = new \Textpattern\Loader(txpath.'/lib');
-$loader->register();
 
 include txpath.'/lib/txplib_db.php';
 include txpath.'/lib/txplib_forms.php';
