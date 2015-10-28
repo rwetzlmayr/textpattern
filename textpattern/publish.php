@@ -34,13 +34,7 @@ if (!defined("txpinterface")) {
 global $trace;
 
 $trace->start('[PHP includes, stage 2]');
-include_once txpath.'/vendors/Textpattern/Loader.php';
-
-$loader = new \Textpattern\Loader(txpath.'/vendors');
-$loader->register();
-
-$loader = new \Textpattern\Loader(txpath.'/lib');
-$loader->register();
+include txpath.'/../vendor/autoload.php';
 
 include_once txpath.'/lib/txplib_publish.php';
 include_once txpath.'/lib/txplib_db.php';

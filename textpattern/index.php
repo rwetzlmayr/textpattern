@@ -86,13 +86,7 @@ $trace->start('[PHP includes]');
 include_once txpath.'/lib/constants.php';
 include txpath.'/lib/txplib_misc.php';
 
-include txpath.'/vendors/Textpattern/Loader.php';
-
-$loader = new \Textpattern\Loader(txpath.'/vendors');
-$loader->register();
-
-$loader = new \Textpattern\Loader(txpath.'/lib');
-$loader->register();
+include txpath.'/../vendor/autoload.php';
 
 include txpath.'/lib/txplib_db.php';
 include txpath.'/lib/txplib_forms.php';
