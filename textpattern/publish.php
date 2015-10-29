@@ -31,13 +31,16 @@ if (!defined("txpinterface")) {
         ' (Otherwise note that publish.php cannot be called directly.)');
 }
 
-include_once txpath.'/vendors/Textpattern/Loader.php';
+//include_once txpath.'/vendors/Textpattern/Loader.php';
+//
+//$loader = new \Textpattern\Loader(txpath.'/vendors');
+//$loader->register();
+//
+//$loader = new \Textpattern\Loader(txpath.'/lib');
+//$loader->register();
 
-$loader = new \Textpattern\Loader(txpath.'/vendors');
-$loader->register();
+include txpath.'/../vendor/autoload.php';
 
-$loader = new \Textpattern\Loader(txpath.'/lib');
-$loader->register();
 
 include_once txpath.'/lib/txplib_publish.php';
 include_once txpath.'/lib/txplib_db.php';

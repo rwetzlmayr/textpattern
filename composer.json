@@ -1,5 +1,12 @@
 {
     "require-dev": {
         "squizlabs/php_codesniffer": "1.*"
+    },
+
+    "autoload": {
+        "psr-4": {
+          "Textpattern\\": "textpattern/vendors/Textpattern",
+          "": "textpattern/vendors"
+        }
     }
 }
