@@ -7,7 +7,7 @@ We could use it for Textpattern in various scenarios. The wall of text below ske
 h2. Recommended environment
 
 # "Install Composer":https://getcomposer.org/doc/00-intro.md and "read the 'basic usage' docs":https://getcomposer.org/doc/01-basic-usage.md.
-# Clone this repo.
+# Clone this repo, checkout branch @rwetzlmayr-composerautoloader@: @git clone https://github.com/rwetzlmayr/textpattern.git --branch rwetzlmayr-composerautoloader --single-branch@.
 # Invoke @composer install@ in the clone's target directory. You should find a @vendor/@ directory below the target directory afterwards - not to be confused with the confusingly named @textpattern/vendors@ directory.
 # Play around.
 
