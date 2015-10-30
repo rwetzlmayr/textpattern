@@ -32,13 +32,15 @@ error_reporting(E_ALL | E_STRICT);
 
 include_once txpath.'/lib/constants.php';
 include_once txpath.'/lib/txplib_misc.php';
-include txpath.'/vendors/Textpattern/Loader.php';
+//include txpath.'/vendors/Textpattern/Loader.php';
+//
+//$loader = new \Textpattern\Loader(txpath.'/vendors');
+//$loader->register();
+//
+//$loader = new \Textpattern\Loader(txpath.'/lib');
+//$loader->register();
 
-$loader = new \Textpattern\Loader(txpath.'/vendors');
-$loader->register();
-
-$loader = new \Textpattern\Loader(txpath.'/lib');
-$loader->register();
+include txpath.'/../vendor/autoload.php';
 
 if (!isset($_SESSION)) {
     if (headers_sent()) {
