@@ -1,0 +1,129 @@
+h1. Request for comments: Using Composer for Textpattern
+
+"Composer":http://getcomposer.com is a package manager for PHP. It contains a class loader.
+
+We could use it for Textpattern in various scenarios. The wall of text below sketches my thoughts about it. Please travel along with me.
+
+h2. Recommended environment
+
+# "Install Composer":https://getcomposer.org/doc/00-intro.md and "read the 'basic usage' docs":https://getcomposer.org/doc/01-basic-usage.md.
+# Clone this repo.
+# Invoke @composer install@ in the clone's target directory. You should find a @vendor/@ directory below the target directory afterwards - not to be confused with the confusingly named @textpattern/vendors@ directory.
+# Play around.
+
+h2. Scope
+
+Composer could be useful in various tasks around...
+
+* ...the development of the *product* "Textpattern"
+* ...the development and deployments of *sites based on* Textpattern
+* ...and the development of *third party products* (plugins, future themes).
+
+h2. Restrictions
+
+We want to keep the entry barrier for both users and contributors as low as possible.
+
+# Textpattern users need not be forced to get in touch with Composer. FTP and the Textpattern backend should suffice to deploy Textpattern,  plugins, and future themes.
+# The current development version should be availabe as both a Git clone and a packaged nightly ZIP file. While deploying a clone from git may require command line usage and Composer knowledge, the deployment of the zipped package must not require any knowledge of Git or Composer.
+# Contributors to Textpattern need not know Composer though it might be beneficial to do so.
+
+h2. Scenarios
+
+h3. Scenario 1: Class loader
+
+Composer contains a class loader. It could be of use for the development of the *product* Textpattern.
+
+h4. Affected parties
+
+* Core development team must learn about integrating Composer into the dev workflow.
+
+h4. Pros
+
+* Use an already invented wheel.
+* Delegate maintainance of this code part to the authors of Composer.
+
+h4. Cons
+
+* Another thing to watch for security issues, compatibility pains, and the like.
+
+h4. Technicalities
+
+This class loader is capable to load classes from Textpattern's current directory structure. I believe that it can substitute @Textpattern/Loader@. This is accomplished by two additional entries in @composer.json@:
+
+bc. "autoload": {
+    "psr-4": {
+      "Textpattern\\": "textpattern/vendors/Textpattern",
+      "": "textpattern/vendors"
+    }
+}
+
+The first dictionary entry keyed @"Textpattern\\"@ points at the class hierarchy below @textpattern/vendors/Textpattern@. The second entry keyed @""@ is the so-called "fallback entry" and is required because @vendors\Txp.php@ does not adhere to the default _class => path_ mapping (we might want to rectify that). See "documentation":https://getcomposer.org/doc/04-schema.md#autoload.
+
+Any changes to the @"autoload"@ entry in @composer.json@ must be "dumped" into their generated PHP autoloaders counterparts by "issuing a @composer dump-autoload@ command":https://getcomposer.org/doc/03-cli.md#dump-autoload. The generated autoloaders are @vendor/composer/autoload_*.php@.
+
+Judging by my short tests on a Windows system with PHP 5.3.29, this autoloader is roundabout as fast as the homegrown @Textpattern\Loader@.
+
+h3. Scenario 2: Package manager for the product "Textpattern"
+
+Future Textpattern development can be based on consuming third-party packages via composer. We currently use one of minor importance (@squizlabs/php_codesniffer@), and could already consume Textile via Composer, too. Please keep in mind: By doing so, we affect the contents of @composer.json@ which is part of our repo.
+
+h4. Affected parties
+
+* Core development team and third party contributors must learn about integrating Composer into their development workflow.
+
+h4. Pros
+
+# Package management! Do not copy files around when third-party packages are updated, resolve dependencies, and the like.
+# Buzzword compliance! (i. e. marketing to the modern developer)
+
+h4. Cons
+
+# It is common best practice to exclude third party packages from the consuming repository. The whole subtree below @vendor/@ would not be part of the "Textpattern repo":https://github.com/textpattern/textpattern but created on the client system after cloning the repo, via an "initial @composer install@ incantation":https://getcomposer.org/doc/03-cli.md#install.
+# As we would want to keep the entry level low, we would need to provide an additional pre-packaged file (nightly zip) which would contain all third party packages and enable the established *download --> unzip --> ftp --> install* workflow. The "Github-generated ZIP file":https://github.com/textpattern/textpattern/archive/master.zip is probably not sufficient for this purpose as it lacks the whole @vendor/@ subtree.
+
+h3(#scenario-3). Scenario 3: Deployment of sites based on Textpattern
+
+The product "Textpattern" can itself be "turned into a consumable package":https://getcomposer.org/doc/02-libraries.md#every-project-is-a-package. Site builders would be able to install Textpattern via Composer just like every other component they need to build a client site.
+
+h4. Pros
+
+# Textpattern would gain automatic core updates through the magic of package management (needs testing).
+
+h4. Cons
+
+# More administrative tasks: "Register at packagist":https://getcomposer.org/doc/02-libraries.md#publishing-to-packagist, update @package.json@ for new releases.
+
+h3. Scenario 4: Development of sites based on Textpattern
+
+Site builders could consume Textpattern and other needed packages via Composer to gather the various components needed for a specific client project (see "above":#scenario-3).
+
+h4(#scenario4-pros). Pros
+
+# These "other needed packages" could be Textpattern plugins or future Textpattern themes. Prerequisite: Textpattern must contain a mechanism by which it can discern these third-party packages from other custom packages the site builder drops into the @vendor/@ directory.
+
+h4. Cons
+
+# @composer.json@ is no longer solely part of the *product* Textpattern. It contains a mix of packages which are part of the *product*, and packages which are part of the *client project*. Merge conflicts may arise when it is updated through a @git pull@ from the Textpattern repo. It may be overwritten if Textpattern is installed from an extracted ZIP file. Some investigation required, eventually exclude @composer.json@ from the ZIP file?
+
+h3. Scenario 5: Development and distribution of plugin and themes
+
+Third-party developers may distribute their Textpattern plugins and future themes as packages. Users can consume these packages via composer. See "WordPress Packagist(This site mirrors the WordPress plugin and theme directories as a Composer repository)":http://wpackagist.org/ for comparison.
+
+h4. Pros
+
+# Package management! Automatic plugin updates through composer magic.
+
+h4. Cons
+
+# Textpattern must contain code which knows about these packages and how they fit into the whole picture (see "above":#scenario4-pros).
+
+h2. Further reading
+
+# "gocom/textpattern-installer":https://github.com/gocom/textpattern-installer
+
+h2. Next steps
+
+Do not shout "Great! Please build it if you think so!". The maintainance of this stuff may be *your* future chore.
+
+Try, test. Amend, extend this RFC through issues and PRs in this repo.
+
