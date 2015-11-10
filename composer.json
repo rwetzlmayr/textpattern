@@ -8,5 +8,9 @@
           "Textpattern\\": "textpattern/vendors/Textpattern",
           "": "textpattern/vendors"
         }
+    },
+
+    "config": {
+        "autoloader-suffix": "_Textpattern"
     }
 }
