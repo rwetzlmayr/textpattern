@@ -98,10 +98,10 @@ if (is_callable('apache_get_modules')) {
     }
 }
 
-$siteurl  = str_replace("http://", '', $_SESSION['siteurl']);
-$siteurl  = str_replace(' ', '%20', rtrim($siteurl, "/"));
-$urlpath  = preg_replace('#^[^/]+#', '', $siteurl);
-$theme    = $_SESSION['theme'] ? $_SESSION['theme'] : 'hive';
+$siteurl = str_replace("http://", '', $_SESSION['siteurl']);
+$siteurl = str_replace(' ', '%20', rtrim($siteurl, "/"));
+$urlpath = preg_replace('#^[^/]+#', '', $siteurl);
+$theme = $_SESSION['theme'] ? $_SESSION['theme'] : 'hive';
 $themedir = txpath.DS.'setup';
 
 $create_sql = array();
@@ -158,14 +158,13 @@ $create_sql[] = "CREATE TABLE `".PFX."textpattern` (
 
 $setup_comment_invite = (gTxt('setup_comment_invite') == 'setup_comment_invite') ? 'Comment' : gTxt('setup_comment_invite');
 
-require_once txpath.'/lib/classTextile.php';
-$textile = new Textile();
+$textile = new \Netcarver\Textile\Parser();
 
-$article['body']    = file_get_contents(txpath.DS.'setup'.DS.'article.body.txp');
-$article['excerpt'] = file_get_contents(txpath.DS.'setup'.DS.'article.excerpt.txp');
+$article['body']    = file_get_contents(txpath.DS.'setup'.DS.'article.body.textile');
+$article['excerpt'] = file_get_contents(txpath.DS.'setup'.DS.'article.excerpt.textile');
 $article = str_replace('siteurl', $urlpath, $article);
-$article['body_html']    = $textile->TextileThis($article['body']);
-$article['excerpt_html'] = $textile->TextileThis($article['excerpt']);
+$article['body_html']    = $textile->textileThis($article['body']);
+$article['excerpt_html'] = $textile->textileThis($article['excerpt']);
 $article = doSlash($article);
 
 $create_sql[] = "INSERT INTO `".PFX."textpattern` VALUES (1, NOW(), '0000-00-00 00:00:00', '".doSlash($_SESSION['name'])."', NOW(), '', 'Welcome to your site', '', '".$article['body']."', '".$article['body_html']."', '".$article['excerpt']."', '".$article['excerpt_html']."', '', 'hope-for-the-future', 'meaningful-labor', 1, '".$setup_comment_invite."', 1, 4, '1', '1', 'articles', '', '', '', 'welcome-to-your-site', '', '', '', '', '', '', '', '', '', '', '".md5(uniqid(rand(), true))."', NOW())";
@@ -612,7 +611,7 @@ if (!$client->query('tups.getLanguage', $blog_uid, LANG)) {
 mysqli_query($link, "FLUSH TABLE `".PFX."txp_lang`");
 
 /**
- * Stub replacement for txplib_db.php/safe_escape()
+ * Stub replacement for txplib_db.php/safe_escape().
  *
  * @ignore
  */

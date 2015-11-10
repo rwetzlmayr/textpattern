@@ -92,12 +92,6 @@ print <<<eod
 <link rel="stylesheet" href="../vendors/jquery/ui/css/textpattern/jquery-ui.min.css">
 <link rel="stylesheet" href="../theme/hive/css/textpattern.min.css">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
-<script src="../vendors/modernizr/modernizr/modernizr.js"></script>
-<!--[if lt IE 9]>
-<link rel="stylesheet" href="../vendors/jquery/ui/css/textpattern/jquery-ui-ie8.min.css">
-<link rel="stylesheet" href="../theme/hive/css/ie8.min.css">
-<script src="../vendors/keithclark/selectivizr/selectivizr.min.js"></script>
-<![endif]-->
 </head>
 <body id="page-setup"{$bodyclass}>
 <main class="txp-body">
@@ -125,7 +119,9 @@ switch ($step) {
 </html>
 <?php
 
-// -------------------------------------------------------------
+/**
+ * Renders stage 0: welcome/choose language panel.
+ */
 
 function chooseLang()
 {
@@ -143,7 +139,11 @@ function chooseLang()
         n.'</div>';
 }
 
-// -------------------------------------------------------------
+/**
+ * Renders progress meter displayed on stages 1 to 4 of installation process.
+ *
+ * @param int $stage The stage
+ */
 
 function txp_setup_progress_meter($stage = 1)
 {
@@ -172,7 +172,9 @@ function txp_setup_progress_meter($stage = 1)
     return join('', $out);
 }
 
-// -------------------------------------------------------------
+/**
+ * Renders stage 1: database details panel.
+ */
 
 function getDbInfo()
 {
@@ -267,7 +269,10 @@ function getDbInfo()
         n.'</div>';
 }
 
-// -------------------------------------------------------------
+/**
+ * Renders stage 2: either config details panel (success) or database details
+ * error message (fail).
+ */
 
 function printConfig()
 {
@@ -371,7 +376,7 @@ function printConfig()
         exit;
     }
 
-    $tables_exist = mysqli_query($mylink, "describe `".$_SESSION['dprefix']."textpattern`");
+    $tables_exist = mysqli_query($mylink, "DESCRIBE `".$_SESSION['dprefix']."textpattern`");
     if ($tables_exist) {
         echo graf(
             span(setup_gTxt('tables_exist', array(
@@ -414,7 +419,10 @@ function printConfig()
         n.'</div>';
 }
 
-// -------------------------------------------------------------
+/**
+ * Renders stage 3: either admin user details panel (success) or config details
+ * error message (fail).
+ */
 
 function getTxpLogin()
 {
@@ -515,7 +523,9 @@ function getTxpLogin()
         n.'</div>';
 }
 
-// -------------------------------------------------------------
+/**
+ * Re-renders stage 3: admin user details panel, due to user input errors.
+ */
 
 function createTxp()
 {
@@ -625,7 +635,10 @@ function makeConfig()
     .$close;
 }
 
-// -------------------------------------------------------------
+/**
+ * Renders stage 4: either installation completed panel (success) or
+ * installation error message (fail).
+ */
 
 function fbCreate()
 {
@@ -640,7 +653,7 @@ function fbCreate()
                 )), ' class="error"')
             ).
             n.'</div>'.
-            n.'<ol>'.n.$GLOBALS['txp_err_html'].'</ol>';
+            n.'<ol>'.n.$GLOBALS['txp_err_html'].'</ol>'.
             n.'</div>';
     } else {
         // Clear the session so no data is leaked.
